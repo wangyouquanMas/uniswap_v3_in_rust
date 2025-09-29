@@ -1,13 +1,16 @@
 use anchor_lang::prelude::*;
 
+pub const AMM_CONFIG_SEED: &str = "amm-config";
 
 #[account]
-#[derive(Debug,Default)] //traits 
-pub struct AmmConfig{
+#[derive(Debug, Default)] //traits
+pub struct AmmConfig {
     //PDA bump for AmmConfigAccount
-    pub bump : u8,
+    pub bump: u8,
     //Program authority to udpate AmmConfig
     pub authority: Pubkey,
+
+    pub index: u16,
 
     pub trade_fee_rate: u32,
 
@@ -18,21 +21,22 @@ pub struct AmmConfig{
     pub fund_fee_rate: u32,
 
     //provide reserved bytes for future upgrades without breaking account layout
-    pub padding:[u64; 4],
+    pub padding: [u64; 4],
 }
 
 //Account layout
-impl AmmConfig{
+impl AmmConfig {
     pub const LEN: usize = 8 //
     + 1 //bump 
     + 32 //authority
+    + 2 //index
     + 4 //trade_fee_rate
     + 4 //protocol_fee_rate
     + 2 //tick_spacing
     + 4 //fund_fee_rate
-    + 8 * 4; //padding 
+    + 8 * 4; //padding
 
-    //Return the number of bytes required to allocate this account 
+    //Return the number of bytes required to allocate this account
     pub const fn space() -> usize {
         Self::LEN
     }
